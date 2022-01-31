@@ -1,0 +1,7 @@
+name: FantasticWild
+version: '${project.version}'
+main: zlfn.fantastic.FantasticWild
+api-version: 1.18
+authors: [ zlfn ]
+description: 마인크래프트 야생을 재미있게 만들어주는 플러그인인가?
+website: https://github.com/zlfn
