@@ -7,12 +7,9 @@ import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.block.*
-import org.bukkit.event.entity.CreatureSpawnEvent
+import org.bukkit.event.entity.*
 import org.bukkit.event.player.PlayerMoveEvent
 import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason
-import org.bukkit.event.entity.EntityDamageByEntityEvent
-import org.bukkit.event.entity.EntityExplodeEvent
-import org.bukkit.event.entity.EntityRegainHealthEvent
 import zlfn.fantastic.AreaChecker.Companion.checkDangerArea
 import zlfn.fantastic.AreaChecker.Companion.checkSafeArea
 import zlfn.fantastic.AreaChecker.Companion.checkSafeAreaBlock
@@ -143,7 +140,7 @@ class MoveListener : Listener{
     {
         var entity = event.entity
         var damager = event.damager
-        if(checkSafeArea(entity.location)&&damager.type==EntityType.PLAYER)
+        if(checkSafeArea(entity.location)&&damager.type==EntityType.PLAYER&&entity.type==EntityType.PLAYER)
             event.isCancelled=true
     }
 
@@ -151,6 +148,26 @@ class MoveListener : Listener{
     fun OnHealing(event: EntityRegainHealthEvent)
     {
         if(!checkDangerArea(event.entity.location)&&event.regainReason==EntityRegainHealthEvent.RegainReason.SATIATED)
+            event.isCancelled=true
+    }
+
+    @EventHandler
+    fun OnDeath(event: PlayerDeathEvent) {
+        var itemlist = event.drops
+        val i = itemlist.iterator()
+        while (i.hasNext())
+        {
+            val item = i.next()
+            if(Math.random() < 0.5)
+                i.remove()
+        }
+    }
+
+    @EventHandler
+    fun OnVillagerAcquire(event:VillagerAcquireTradeEvent)
+    {
+        var item = event.recipe
+        if(item.result.type==Material.ENCHANTED_BOOK)
             event.isCancelled=true
     }
 }
